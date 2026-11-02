@@ -1,0 +1,32 @@
+name: DevOps CI-CD Pipeline
+
+# 1. Trigger rule: main branch lo commit push avvagane pipeline run avvali
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Git Repo nunchi code checkout cheyadam
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      # Step 2: Docker Hub login
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Docker Build & Push to Private Repo
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            prahalladareddy/my-private-app:latest
+            prahalladareddy/my-private-app:cicd-v1
